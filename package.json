@@ -1,0 +1,19 @@
+{
+    "name": "bj",
+    "module": "src/main.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "bun run --hot src/index.html"
+    },
+    "dependencies": {
+        "pixi.js": "^8"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "@biomejs/biome": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    }
+}

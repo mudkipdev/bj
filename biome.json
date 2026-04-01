@@ -1,0 +1,22 @@
+{
+    "json": {
+        "parser": {
+            "allowTrailingComma": false
+        },
+        "formatter": {
+            "indentWidth": 4
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "indentWidth": 4,
+            "indentStyle": "space",
+            "quoteStyle": "double",
+            "trailingComma": "es5",
+            "semicolons": "always"
+        },
+        "parser": {
+            "unsafeParameterDecoratorsEnabled": true
+        }
+    }
+}
