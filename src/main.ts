@@ -1,4 +1,4 @@
-import { Application, Graphics } from "pixi.js";
+import { Application, Assets, Rectangle, Texture, Sprite } from "pixi.js";
 import {
     createPlayer,
     resetPlayer,
@@ -8,25 +8,43 @@ import {
     clampToWorldBorder,
     updateCollisions
 } from "./player";
-import type { Rectangle } from "./utility";
 
-const groundHeight = 100;
-const surfaceColor = 0x64c864;
-const bgColor = "#2288ff";
+import { tileSize, textureScale, TileType, createWorld, getBoundingBoxes } from "./world";
+import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
 
 (async () => {
     const app = new Application();
-    await app.init({ background: bgColor, resizeTo: window });
+    await app.init({ resizeTo: window });
     document.body.appendChild(app.canvas);
 
     const width = app.screen.width;
     const height = app.screen.height;
 
-    const surfaces: Rectangle[] = [
-        { position: { x: 0, y: height - groundHeight }, size: { x: width, y: groundHeight } },
-        { position: { x: 400, y: 600 }, size: { x: 200, y: 20 } },
-        { position: { x: 800, y: 450 }, size: { x: 200, y: 20 } },
-    ];
+    const textureAtlas = await Assets.load<Texture>(tilesUrl);
+    textureAtlas.source.scaleMode = "nearest"; // make it pixelated
+
+    const tileTextures: Texture[] = Array.from({ length: Object.keys(TileType).length / 2 }, (_, index) =>
+        new Texture({
+            source: textureAtlas.source,
+            frame: new Rectangle(index * textureScale, 0, textureScale, textureScale),
+        })
+    );
+
+    const columns = Math.ceil(width / tileSize);
+    const rows = Math.ceil(height / tileSize);
+    const grid = createWorld(columns, rows);
+    const boundingBoxes = getBoundingBoxes(grid);
+
+    for (const [row, tilesInRow] of grid.entries()) {
+        for (const [column, tileType] of tilesInRow.entries()) {
+            const sprite = new Sprite(tileTextures[tileType]);
+            sprite.x = column * tileSize;
+            sprite.y = row * tileSize;
+            sprite.width = tileSize;
+            sprite.height = tileSize;
+            app.stage.addChild(sprite);
+        }
+    }
 
     const keys = {
         left: false,
@@ -52,24 +70,16 @@ const bgColor = "#2288ff";
         keys.space = false;
     });
 
-    const player = createPlayer();
+    const spawnPosition = { x: 3 * tileSize, y: 22 * tileSize };
+    const player = createPlayer(spawnPosition);
     app.stage.addChild(player.sprite);
-
-    surfaces.map((surface) => {
-        const sprite = new Graphics();
-        sprite.rect(0, 0, surface.size.x, surface.size.y).fill(surfaceColor);
-        sprite.x = surface.position.x;
-        sprite.y = surface.position.y;
-        app.stage.addChild(sprite);
-        return sprite;
-    });
 
     app.ticker.add((time) => {
         const deltaTime = time.deltaTime / 60;
         updateVelocity(player, keys, deltaTime);
         updatePosition(player, deltaTime);
         clampToWorldBorder(player, width);
-        updateCollisions(player, surfaces);
+        updateCollisions(player, boundingBoxes);
 
         // void
         if (player.position.y > height) {

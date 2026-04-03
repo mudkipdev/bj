@@ -1,9 +1,6 @@
 import { Graphics } from "pixi.js";
 import type { Rectangle, Vec2 } from "./utility";
-
-const skinColor = 0xE8BEAC;
-const size = { x: 50, y: 80 };
-const spawnPosition = { x: 100, y: 550 };
+import { tileSize } from "./world";
 
 export const maxSpeed = 200;
 export const friction = 600;
@@ -20,9 +17,10 @@ export interface Player {
     onGround: boolean;
 }
 
-export function createPlayer(): Player {
+export function createPlayer(spawnPosition: Vec2): Player {
     const sprite = new Graphics();
-    sprite.rect(0, 0, size.x, size.y).fill(skinColor);
+    const size = { x: tileSize, y: tileSize * 2 }; // width 1, height 2
+    sprite.rect(0, 0, size.x, size.y).fill(0xFF4444);
     sprite.x = spawnPosition.x;
     sprite.y = spawnPosition.y;
 
@@ -32,7 +30,7 @@ export function createPlayer(): Player {
         previousPosition: { ...spawnPosition },
         startPosition: { ...spawnPosition },
         velocity: { x: 0, y: 0 },
-        size: size,
+        size,
         onGround: false,
     };
 }
