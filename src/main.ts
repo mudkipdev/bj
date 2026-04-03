@@ -1,4 +1,4 @@
-import { Application, Assets, Rectangle, Texture, Sprite } from "pixi.js";
+import { Application, Assets, Rectangle, Texture, Sprite, Text } from "pixi.js";
 import {
     createPlayer,
     resetPlayer,
@@ -69,6 +69,17 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
         keys.right = false;
         keys.space = false;
     });
+
+    const text = new Text({
+        text: "hello world", style: {
+            fill: 0xFFFFFF,
+            fontFamily: "Press Start 2P",
+            fontSize: 24
+        }
+    });
+    text.x = 24;
+    text.y = 24;
+    app.stage.addChild(text);
 
     const spawnPosition = { x: 3 * tileSize, y: 22 * tileSize };
     const player = createPlayer(spawnPosition);
