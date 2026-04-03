@@ -4,7 +4,8 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "dev": "bun run --hot src/index.html"
+        "dev": "bun run --hot src/index.html",
+        "build": "bun build src/index.html --outdir dist --minify --tree-shaking"
     },
     "dependencies": {
         "pixi.js": "^8"
