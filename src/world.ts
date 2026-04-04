@@ -9,7 +9,8 @@ export const worldHeight = worldRows * tileSize;
 
 export enum TileType {
     air = 0,
-    solid = 1
+    grass = 1,
+    dirt = 2
 }
 
 export type TileGrid = TileType[][];
@@ -20,8 +21,12 @@ export function createWorld(columns: number, rows: number): TileGrid {
     );
 
     // ground
-    for (let row = rows - 3; row < rows; row++) {
-        grid[row]!.fill(TileType.solid);
+    for (let row = 0; row < rows; row++) {
+        if (row == rows - 3) {
+            grid[row]!.fill(TileType.grass);
+        } else if (row >= rows - 3) {
+            grid[row]!.fill(TileType.dirt);
+        }
     }
 
     return grid;
