@@ -26,6 +26,7 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     const app = new Application();
     await app.init({ width: worldWidth, height: worldHeight });
     document.body.appendChild(app.canvas);
+    await document.fonts.load('24px "PixelOperator"');
 
     const textureAtlas = await Assets.load<Texture>(tilesUrl);
     textureAtlas.source.scaleMode = "nearest"; // make it pixelated
@@ -76,14 +77,16 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     });
 
     const text = new Text({
-        text: "hello world", style: {
+        text: "Health: 100%", style: {
             fill: 0xFFFFFF,
-            fontFamily: "Press Start 2P",
-            fontSize: 24
+            fontFamily: "PixelOperator",
+            fontWeight: 700,
+            fontSize: 64
         }
     });
+
     text.x = 24;
-    text.y = 24;
+    text.y = 12;
     app.stage.addChild(text);
 
     const spawnPosition = { x: 3 * tileSize, y: (worldRows - 5) * tileSize };
