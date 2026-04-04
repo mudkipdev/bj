@@ -6,6 +6,7 @@ export const maxSpeed = 200;
 export const friction = 600;
 export const jumpForce = 430;
 export const gravity = 500;
+export const maxHealth = 3;
 
 export interface Player {
     sprite: Graphics;
@@ -15,6 +16,7 @@ export interface Player {
     velocity: Vec2;
     size: Vec2;
     onGround: boolean;
+    health: number;
 }
 
 export function createPlayer(spawnPosition: Vec2): Player {
@@ -32,7 +34,12 @@ export function createPlayer(spawnPosition: Vec2): Player {
         velocity: { x: 0, y: 0 },
         size,
         onGround: false,
+        health: maxHealth
     };
+}
+
+export function isDead(player: Player): boolean {
+    return player.health <= 0;
 }
 
 export function resetPlayer(player: Player): void {

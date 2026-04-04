@@ -1,6 +1,7 @@
 import { Application, Assets, Rectangle, Texture, Sprite, Text } from "pixi.js";
 import {
     createPlayer,
+    maxHealth,
     resetPlayer,
     syncPlayerSprite,
     updateVelocity,
@@ -77,7 +78,7 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     });
 
     const text = new Text({
-        text: "Health: 100%", style: {
+        text: `Health: ${maxHealth} / ${maxHealth}`, style: {
             fill: 0xFFFFFF,
             fontFamily: "PixelOperator",
             fontWeight: 700,
@@ -99,6 +100,7 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
         updatePosition(player, deltaTime);
         clampToWorldBorder(player, worldWidth);
         updateCollisions(player, boundingBoxes);
+        text.text = `Health: ${player.health} / ${maxHealth}`;
 
         // void
         if (player.position.y > worldHeight) {
