@@ -1,4 +1,4 @@
-import { Application, Assets, Rectangle, Texture, Sprite, Text } from "pixi.js";
+import { Application, Assets, Rectangle, Texture, Sprite, Text, Container } from "pixi.js";
 import { syncEntitySprite, type Entity } from "./entities/entity";
 import { createEnemy, updateEnemy } from "./entities/enemy";
 import {
@@ -94,8 +94,15 @@ import deathUrl from "../assets/sounds/death.wav" with { type: "file" };
             fill: 0xFFFFFF,
             fontFamily: "PixelOperator",
             fontWeight: 700,
-            fontSize: 64
-        }
+            fontSize: 64,
+            dropShadow: {
+                color: 0x000000,
+                alpha: 0.6,
+                angle: Math.PI / 4,
+                distance: 5,
+                blur: 0
+            }
+        },
     });
 
     text.x = 24;
@@ -109,6 +116,13 @@ import deathUrl from "../assets/sounds/death.wav" with { type: "file" };
             fontFamily: "PixelOperator",
             fontWeight: 700,
             fontSize: 64
+        },
+        dropShadow: {
+            color: 0x000000,
+            alpha: 0.6,
+            angle: Math.PI / 4,
+            distance: 5,
+            blur: 0
         }
     });
 

@@ -21,6 +21,7 @@ export function createEnemy(spawnPosition: Vec2, atlas: Texture): Enemy {
         previousPosition: { ...spawnPosition },
         velocity: { x: 0, y: 0 },
         size,
+        facing: "left",
         spawnPosition: { ...spawnPosition }
     };
 }
@@ -33,8 +34,10 @@ export function updateEnemy(enemy: Enemy, target: Entity, deltaTime: number): vo
 
     if (Math.abs(deltaX) > 2) {
         enemy.velocity.x = Math.sign(deltaX) * speed;
+        enemy.facing = enemy.velocity.x < 0 ? "left" : "right";
         enemy.position.x += enemy.velocity.x * deltaTime;
     } else {
         enemy.velocity.x = 0;
+        enemy.facing = target.position.x < enemy.position.x ? "left" : "right";
     }
 }

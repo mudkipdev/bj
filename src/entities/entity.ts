@@ -8,6 +8,7 @@ export interface Entity {
     previousPosition: Vec2;
     velocity: Vec2;
     size: Vec2;
+    facing: "left" | "right";
 }
 
 export function createEntitySprite(atlas: Texture, x: number, y: number, size: Vec2): Sprite {
@@ -23,6 +24,12 @@ export function createEntitySprite(atlas: Texture, x: number, y: number, size: V
 }
 
 export function syncEntitySprite(entity: Entity): void {
-    entity.sprite.x = entity.position.x;
+    const scaleX = Math.abs(entity.sprite.scale.x) || 1;
+    entity.sprite.scale.x = entity.facing === "left" ? -scaleX : scaleX;
+
+    entity.sprite.x = entity.facing === "left"
+        ? entity.position.x + entity.size.x
+        : entity.position.x;
+
     entity.sprite.y = entity.position.y;
 }

@@ -27,6 +27,7 @@ export function createPlayer(spawnPosition: Vec2, atlas: Texture): Player {
         previousPosition: { ...spawnPosition },
         velocity: { x: 0, y: 0 },
         size,
+        facing: "right",
         spawnPosition: { ...spawnPosition },
         onGround: false,
         health: maxHealth
@@ -61,8 +62,10 @@ export function updateVelocity(
 ): void {
     if (keys.left) {
         player.velocity.x = -maxSpeed;
+        player.facing = "left";
     } else if (keys.right) {
         player.velocity.x = maxSpeed;
+        player.facing = "right";
     } else {
         if (Math.abs(player.velocity.x) > 0) {
             player.velocity.x += (player.velocity.x > 0 ? -1 : 1) * friction * deltaTime;
