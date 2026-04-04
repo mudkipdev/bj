@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import type { Vec2 } from "./utility";
+import type { Vec2 } from "../utility";
 
 export interface Entity {
     sprite: Graphics;

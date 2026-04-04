@@ -1,7 +1,7 @@
 import { Graphics } from "pixi.js";
-import { syncEntitySprite, type Entity } from "./entity";
-import type { Rectangle, Vec2 } from "./utility";
-import { tileSize } from "./world";
+import type { Entity } from "./entity";
+import type { Rectangle, Vec2 } from "../utility";
+import { tileSize } from "../world";
 
 export const maxSpeed = 200;
 export const friction = 600;
@@ -18,7 +18,7 @@ export interface Player extends Entity {
 export function createPlayer(spawnPosition: Vec2): Player {
     const sprite = new Graphics();
     const size = { x: tileSize, y: tileSize * 2 }; // width 1, height 2
-    sprite.rect(0, 0, size.x, size.y).fill(0xFF4444);
+    sprite.rect(0, 0, size.x, size.y).fill(0x4488FF);
     sprite.x = spawnPosition.x;
     sprite.y = spawnPosition.y;
 
@@ -44,10 +44,6 @@ export function resetPlayer(player: Player): void {
     player.velocity.x = 0;
     player.velocity.y = 0;
     player.onGround = false;
-}
-
-export function syncPlayerSprite(player: Player): void {
-    syncEntitySprite(player);
 }
 
 export function updateVelocity(
@@ -79,21 +75,21 @@ export function updateVelocity(
     }
 }
 
-export function updatePosition(player: Player, deltaTime: number): void {
-    player.velocity.y += gravity * deltaTime;
-    player.previousPosition.x = player.position.x;
-    player.previousPosition.y = player.position.y;
-    player.position.x += player.velocity.x * deltaTime;
-    player.position.y += player.velocity.y * deltaTime;
+export function updatePosition(entity: Entity, deltaTime: number): void {
+    entity.velocity.y += gravity * deltaTime;
+    entity.previousPosition.x = entity.position.x;
+    entity.previousPosition.y = entity.position.y;
+    entity.position.x += entity.velocity.x * deltaTime;
+    entity.position.y += entity.velocity.y * deltaTime;
 }
 
-export function clampToWorldBorder(player: Player, width: number): void {
-    if (player.position.x < 0) {
-        player.position.x = 0;
+export function clampToWorldBorder(entity: Entity, width: number): void {
+    if (entity.position.x < 0) {
+        entity.position.x = 0;
     }
 
-    if (player.position.x + player.size.x > width) {
-        player.position.x = width - player.size.x;
+    if (entity.position.x + entity.size.x > width) {
+        entity.position.x = width - entity.size.x;
     }
 }
 

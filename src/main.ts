@@ -1,5 +1,6 @@
 import { Application, Assets, Rectangle, Texture, Sprite, Text } from "pixi.js";
-import { syncEntitySprite, type Entity } from "./entity";
+import { syncEntitySprite, type Entity } from "./entities/entity";
+import { createEnemy, updateEnemy } from "./entities/enemy";
 import {
     createPlayer,
     maxHealth,
@@ -8,7 +9,7 @@ import {
     updatePosition,
     clampToWorldBorder,
     updateCollisions
-} from "./player";
+} from "./entities/player";
 
 import {
     tileSize,
@@ -96,12 +97,19 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     entities.push(player);
     app.stage.addChild(player.sprite);
 
+    const enemySpawnPosition = { x: worldWidth - 5 * tileSize, y: (worldRows - 5) * tileSize };
+    const enemy = createEnemy(enemySpawnPosition);
+    entities.push(enemy);
+    app.stage.addChild(enemy.sprite);
+
     app.ticker.add((time) => {
         const deltaTime = time.deltaTime / 60;
         updateVelocity(player, keys, deltaTime);
         updatePosition(player, deltaTime);
         clampToWorldBorder(player, worldWidth);
         updateCollisions(player, boundingBoxes);
+        updateEnemy(enemy, player, deltaTime);
+        clampToWorldBorder(enemy, worldWidth);
         text.text = `Health: ${player.health} / ${maxHealth}`;
 
         // void
