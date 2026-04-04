@@ -1,7 +1,11 @@
 import type { Rectangle } from "./utility";
 
-export const tileSize = 32;
-export const textureScale = 16;
+export const tileSize = 48;
+export const textureScale = 32;
+export const worldColumns = 30;
+export const worldRows = 17;
+export const worldWidth = worldColumns * tileSize;
+export const worldHeight = worldRows * tileSize;
 
 export enum TileType {
     air = 0,

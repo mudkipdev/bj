@@ -9,16 +9,23 @@ import {
     updateCollisions
 } from "./player";
 
-import { tileSize, textureScale, TileType, createWorld, getBoundingBoxes } from "./world";
+import {
+    tileSize,
+    textureScale,
+    TileType,
+    createWorld,
+    getBoundingBoxes,
+    worldColumns,
+    worldRows,
+    worldWidth,
+    worldHeight
+} from "./world";
 import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
 
 (async () => {
     const app = new Application();
-    await app.init({ resizeTo: window });
+    await app.init({ width: worldWidth, height: worldHeight });
     document.body.appendChild(app.canvas);
-
-    const width = app.screen.width;
-    const height = app.screen.height;
 
     const textureAtlas = await Assets.load<Texture>(tilesUrl);
     textureAtlas.source.scaleMode = "nearest"; // make it pixelated
@@ -30,9 +37,7 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
         })
     );
 
-    const columns = Math.ceil(width / tileSize);
-    const rows = Math.ceil(height / tileSize);
-    const grid = createWorld(columns, rows);
+    const grid = createWorld(worldColumns, worldRows);
     const boundingBoxes = getBoundingBoxes(grid);
 
     for (const [row, tilesInRow] of grid.entries()) {
@@ -81,7 +86,7 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     text.y = 24;
     app.stage.addChild(text);
 
-    const spawnPosition = { x: 3 * tileSize, y: 22 * tileSize };
+    const spawnPosition = { x: 3 * tileSize, y: (worldRows - 5) * tileSize };
     const player = createPlayer(spawnPosition);
     app.stage.addChild(player.sprite);
 
@@ -89,11 +94,11 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
         const deltaTime = time.deltaTime / 60;
         updateVelocity(player, keys, deltaTime);
         updatePosition(player, deltaTime);
-        clampToWorldBorder(player, width);
+        clampToWorldBorder(player, worldWidth);
         updateCollisions(player, boundingBoxes);
 
         // void
-        if (player.position.y > height) {
+        if (player.position.y > worldHeight) {
             resetPlayer(player);
         }
 
