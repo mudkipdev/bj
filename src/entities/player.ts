@@ -1,7 +1,7 @@
-import { Graphics } from "pixi.js";
-import type { Entity } from "./entity";
+import { createEntitySprite, type Entity } from "./entity";
 import type { Rectangle, Vec2 } from "../utility";
 import { tileSize } from "../world";
+import type { Texture } from "pixi.js";
 
 export const maxSpeed = 200;
 export const friction = 600;
@@ -15,10 +15,9 @@ export interface Player extends Entity {
     health: number;
 }
 
-export function createPlayer(spawnPosition: Vec2): Player {
-    const sprite = new Graphics();
-    const size = { x: tileSize, y: tileSize * 2 }; // width 1, height 2
-    sprite.rect(0, 0, size.x, size.y).fill(0x4488FF);
+export function createPlayer(spawnPosition: Vec2, atlas: Texture): Player {
+    const size = { x: tileSize * 2, y: tileSize * 2 };
+    const sprite = createEntitySprite(atlas, 0, 1, size);
     sprite.x = spawnPosition.x;
     sprite.y = spawnPosition.y;
 

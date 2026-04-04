@@ -1,7 +1,7 @@
-import { Graphics } from "pixi.js";
-import type { Entity } from "./entity";
+import { createEntitySprite, type Entity } from "./entity";
 import type { Vec2 } from "../utility";
 import { tileSize } from "../world";
+import type { Texture } from "pixi.js";
 
 const speed = 110;
 
@@ -9,10 +9,9 @@ export interface Enemy extends Entity {
     spawnPosition: Vec2;
 }
 
-export function createEnemy(spawnPosition: Vec2): Enemy {
-    const sprite = new Graphics();
-    const size = { x: tileSize, y: tileSize * 2 };
-    sprite.rect(0, 0, size.x, size.y).fill(0xFF4444);
+export function createEnemy(spawnPosition: Vec2, atlas: Texture): Enemy {
+    const size = { x: tileSize * 2, y: tileSize * 2 };
+    const sprite = createEntitySprite(atlas, 0, 2, size);
     sprite.x = spawnPosition.x;
     sprite.y = spawnPosition.y;
 

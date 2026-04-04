@@ -26,7 +26,7 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
 
 (async () => {
     const app = new Application();
-    await app.init({ width: worldWidth, height: worldHeight });
+    await app.init({ backgroundColor: "#78D", width: worldWidth, height: worldHeight });
     document.body.appendChild(app.canvas);
     await document.fonts.load('24px "PixelOperator"');
 
@@ -92,16 +92,26 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     app.stage.addChild(text);
 
     const entities: Entity[] = [];
-    const spawnPosition = { x: 3 * tileSize, y: (worldRows - 5) * tileSize };
-    const player = createPlayer(spawnPosition);
+
+    // PLAYER //
+    const player = createPlayer({
+        x: 3 * tileSize,
+        y: (worldRows - 5) * tileSize
+    }, textureAtlas);
+
     entities.push(player);
     app.stage.addChild(player.sprite);
 
-    const enemySpawnPosition = { x: worldWidth - 5 * tileSize, y: (worldRows - 5) * tileSize };
-    const enemy = createEnemy(enemySpawnPosition);
+    // ENEMY //
+    const enemy = createEnemy({
+        x: worldWidth - 5 * tileSize,
+        y: (worldRows - 5) * tileSize
+    }, textureAtlas);
+
     entities.push(enemy);
     app.stage.addChild(enemy.sprite);
 
+    // TICK LOOP //
     app.ticker.add((time) => {
         const deltaTime = time.deltaTime / 60;
         updateVelocity(player, keys, deltaTime);
