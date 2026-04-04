@@ -3,10 +3,13 @@ import { syncEntitySprite, type Entity } from "./entities/entity";
 import { createEnemy, updateEnemy } from "./entities/enemy";
 import {
     createPlayer,
+    damagePlayer,
+    isDead,
     maxHealth,
     resetPlayer,
     updateVelocity,
     updatePosition,
+    checkCollision,
     clampToWorldBorder,
     updateCollisions
 } from "./entities/player";
@@ -22,7 +25,10 @@ import {
     worldWidth,
     worldHeight
 } from "./world";
+
 import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
+import hurtUrl from "../assets/sounds/hurt.wav" with { type: "file" };
+import deathUrl from "../assets/sounds/death.wav" with { type: "file" };
 
 (async () => {
     const app = new Application();
@@ -91,6 +97,18 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     text.y = 12;
     app.stage.addChild(text);
 
+    const deadText = new Text({
+        text: "You died!",
+        style: {
+            fill: 0xFFFFFF,
+            fontFamily: "PixelOperator",
+            fontWeight: 700,
+            fontSize: 64
+        }
+    });
+
+    deadText.anchor.set(0.5);
+
     const entities: Entity[] = [];
 
     // PLAYER //
@@ -111,24 +129,74 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     entities.push(enemy);
     app.stage.addChild(enemy.sprite);
 
+    // SOUND SHIT //
+    const hurtSound = new Audio(hurtUrl);
+    const deathSound = new Audio(deathUrl);
+
+    const playSound = (audio: HTMLAudioElement) => {
+        const instance = audio.cloneNode(true) as HTMLAudioElement;
+        instance.currentTime = 0;
+        void instance.play().catch(() => { });
+    };
+
+    let gameTime = 0;
+    let nextDamageTime = 0;
+    let gameOver = false;
+
+    const triggerGameOver = () => {
+        if (gameOver) {
+            return;
+        }
+
+        gameOver = true;
+        app.stage.removeChildren();
+        deadText.x = worldWidth / 2;
+        deadText.y = worldHeight / 2;
+        app.stage.addChild(deadText);
+    };
+
     // TICK LOOP //
     app.ticker.add((time) => {
+        if (gameOver) {
+            return;
+        }
+
         const deltaTime = time.deltaTime / 60;
-        updateVelocity(player, keys, deltaTime);
-        updatePosition(player, deltaTime);
-        clampToWorldBorder(player, worldWidth);
-        updateCollisions(player, boundingBoxes);
+        const elapsedSeconds = time.deltaMS / 1000;
         updateEnemy(enemy, player, deltaTime);
         clampToWorldBorder(enemy, worldWidth);
+
+        if (!isDead(player)) {
+            updateVelocity(player, keys, deltaTime);
+            updatePosition(player, deltaTime);
+            clampToWorldBorder(player, worldWidth);
+            updateCollisions(player, boundingBoxes);
+        }
+
+        if (!isDead(player) && checkCollision(player.position, player.size, enemy.position, enemy.size) && gameTime >= nextDamageTime) {
+            const remainingHealth = damagePlayer(player, 1);
+            nextDamageTime = gameTime + 1;
+
+            if (remainingHealth === 0) {
+                playSound(deathSound);
+                triggerGameOver();
+                return;
+            } else {
+                playSound(hurtSound);
+            }
+        }
+
         text.text = `Health: ${player.health} / ${maxHealth}`;
 
         // void
-        if (player.position.y > worldHeight) {
+        if (!isDead(player) && player.position.y > worldHeight) {
             resetPlayer(player);
         }
 
         for (const entity of entities) {
             syncEntitySprite(entity);
         }
+
+        gameTime += elapsedSeconds;
     });
 })();

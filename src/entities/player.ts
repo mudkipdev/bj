@@ -37,6 +37,11 @@ export function isDead(player: Player): boolean {
     return player.health <= 0;
 }
 
+export function damagePlayer(player: Player, amount: number): number {
+    player.health = Math.max(0, player.health - amount);
+    return player.health;
+}
+
 export function resetPlayer(player: Player): void {
     player.position.x = player.spawnPosition.x;
     player.position.y = player.spawnPosition.y;
