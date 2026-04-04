@@ -1,9 +1,9 @@
 import { Application, Assets, Rectangle, Texture, Sprite, Text } from "pixi.js";
+import { syncEntitySprite, type Entity } from "./entity";
 import {
     createPlayer,
     maxHealth,
     resetPlayer,
-    syncPlayerSprite,
     updateVelocity,
     updatePosition,
     clampToWorldBorder,
@@ -90,8 +90,10 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
     text.y = 12;
     app.stage.addChild(text);
 
+    const entities: Entity[] = [];
     const spawnPosition = { x: 3 * tileSize, y: (worldRows - 5) * tileSize };
     const player = createPlayer(spawnPosition);
+    entities.push(player);
     app.stage.addChild(player.sprite);
 
     app.ticker.add((time) => {
@@ -107,6 +109,8 @@ import tilesUrl from "../assets/textures/tiles.png" with { type: "file" };
             resetPlayer(player);
         }
 
-        syncPlayerSprite(player);
+        for (const entity of entities) {
+            syncEntitySprite(entity);
+        }
     });
 })();

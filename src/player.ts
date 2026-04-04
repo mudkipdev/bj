@@ -1,4 +1,5 @@
 import { Graphics } from "pixi.js";
+import { syncEntitySprite, type Entity } from "./entity";
 import type { Rectangle, Vec2 } from "./utility";
 import { tileSize } from "./world";
 
@@ -8,13 +9,8 @@ export const jumpForce = 430;
 export const gravity = 500;
 export const maxHealth = 3;
 
-export interface Player {
-    sprite: Graphics;
-    position: Vec2;
-    previousPosition: Vec2;
-    startPosition: Vec2;
-    velocity: Vec2;
-    size: Vec2;
+export interface Player extends Entity {
+    spawnPosition: Vec2;
     onGround: boolean;
     health: number;
 }
@@ -30,9 +26,9 @@ export function createPlayer(spawnPosition: Vec2): Player {
         sprite,
         position: { ...spawnPosition },
         previousPosition: { ...spawnPosition },
-        startPosition: { ...spawnPosition },
         velocity: { x: 0, y: 0 },
         size,
+        spawnPosition: { ...spawnPosition },
         onGround: false,
         health: maxHealth
     };
@@ -43,16 +39,15 @@ export function isDead(player: Player): boolean {
 }
 
 export function resetPlayer(player: Player): void {
-    player.position.x = player.startPosition.x;
-    player.position.y = player.startPosition.y;
+    player.position.x = player.spawnPosition.x;
+    player.position.y = player.spawnPosition.y;
     player.velocity.x = 0;
     player.velocity.y = 0;
     player.onGround = false;
 }
 
 export function syncPlayerSprite(player: Player): void {
-    player.sprite.x = player.position.x;
-    player.sprite.y = player.position.y;
+    syncEntitySprite(player);
 }
 
 export function updateVelocity(
