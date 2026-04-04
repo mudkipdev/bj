@@ -3,10 +3,10 @@ import type { Rectangle, Vec2 } from "../utility";
 import { tileSize } from "../world";
 import type { Texture } from "pixi.js";
 
-export const maxSpeed = 200;
-export const friction = 600;
-export const jumpForce = 430;
-export const gravity = 500;
+export const maxSpeed = 240;
+export const friction = 1740;
+export const jumpForce = 780;
+export const gravity = 1800;
 export const maxHealth = 3;
 
 export interface Player extends Entity {
