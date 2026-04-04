@@ -17,7 +17,7 @@ import {
 import {
     tileSize,
     textureScale,
-    TileType,
+    textureCoordinates,
     createWorld,
     getBoundingBoxes,
     worldColumns,
@@ -39,19 +39,24 @@ import deathUrl from "../assets/sounds/death.wav" with { type: "file" };
     const textureAtlas = await Assets.load<Texture>(tilesUrl);
     textureAtlas.source.scaleMode = "nearest"; // make it pixelated
 
-    const tileTextures: Texture[] = Array.from({ length: Object.keys(TileType).length / 2 }, (_, index) =>
-        new Texture({
-            source: textureAtlas.source,
-            frame: new Rectangle(index * textureScale, 0, textureScale, textureScale),
-        })
-    );
-
     const grid = createWorld(worldColumns, worldRows);
     const boundingBoxes = getBoundingBoxes(grid);
 
     for (const [row, tilesInRow] of grid.entries()) {
         for (const [column, tileType] of tilesInRow.entries()) {
-            const sprite = new Sprite(tileTextures[tileType]);
+            const frame = textureCoordinates[tileType];
+
+            if (!frame) {
+                continue;
+            }
+
+            const sprite = new Sprite(
+                new Texture({
+                    source: textureAtlas.source,
+                    frame: new Rectangle(frame.x * textureScale, frame.y * textureScale, textureScale, textureScale)
+                })
+            );
+
             sprite.x = column * tileSize;
             sprite.y = row * tileSize;
             sprite.width = tileSize;

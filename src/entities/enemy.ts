@@ -3,7 +3,7 @@ import type { Vec2 } from "../utility";
 import { tileSize } from "../world";
 import type { Texture } from "pixi.js";
 
-const speed = 110;
+const speed = 3;
 
 export interface Enemy extends Entity {
     spawnPosition: Vec2;
@@ -11,7 +11,7 @@ export interface Enemy extends Entity {
 
 export function createEnemy(spawnPosition: Vec2, atlas: Texture): Enemy {
     const size = { x: tileSize * 2, y: tileSize * 2 };
-    const sprite = createEntitySprite(atlas, 0, 2, size);
+    const sprite = createEntitySprite(atlas, 0, 6, size);
     sprite.x = spawnPosition.x;
     sprite.y = spawnPosition.y;
 
